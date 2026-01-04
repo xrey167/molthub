@@ -77,6 +77,36 @@ program
     await cmdWhoami(opts)
   })
 
+const auth = program
+  .command('auth')
+  .description('Authentication commands')
+  .showHelpAfterError()
+  .showSuggestionAfterError()
+
+auth
+  .command('login')
+  .description('Store API token (for publish)')
+  .option('--token <token>', 'API token')
+  .action(async (options) => {
+    const opts = resolveGlobalOpts()
+    await cmdLogin(opts, options.token)
+  })
+
+auth
+  .command('logout')
+  .description('Remove stored token')
+  .action(async () => {
+    await cmdLogout()
+  })
+
+auth
+  .command('whoami')
+  .description('Validate token')
+  .action(async () => {
+    const opts = resolveGlobalOpts()
+    await cmdWhoami(opts)
+  })
+
 program
   .command('search')
   .description('Vector search skills')

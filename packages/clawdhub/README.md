@@ -14,6 +14,8 @@ Create a token on `clawdhub.com` → Settings → API tokens, then:
 
 ```bash
 clawdhub login
+# or
+clawdhub auth login
 ```
 
 ## Examples
