@@ -6,7 +6,7 @@ import type { GlobalOpts } from '../types'
 const mockIntro = vi.fn()
 const mockOutro = vi.fn()
 const mockNote = vi.fn()
-const mockMultiselect = vi.fn(async () => [])
+const mockMultiselect = vi.fn<Promise<string[]>, [unknown?]>(async () => [])
 let interactive = false
 
 const defaultFindSkillFolders = async (root: string) => {
@@ -127,7 +127,7 @@ describe('cmdSync', () => {
 
   it('prints bullet lists and selects all actionable by default', async () => {
     interactive = true
-    mockMultiselect.mockImplementation(async (args: unknown) => {
+    mockMultiselect.mockImplementation(async (args?: unknown) => {
       const { initialValues } = args as { initialValues: string[] }
       return initialValues
     })
@@ -161,7 +161,8 @@ describe('cmdSync', () => {
     const syncedNote = mockNote.mock.calls.find((call) => call[0] === 'Already synced')
     expect(syncedNote?.[1]).toMatch(/- synced-skill/)
 
-    const promptArgs = mockMultiselect.mock.calls.at(-1)?.[0] as { initialValues: string[] }
+    const lastCall = mockMultiselect.mock.calls.at(-1)
+    const promptArgs = lastCall ? (lastCall[0] as { initialValues: string[] }) : undefined
     expect(promptArgs?.initialValues.length).toBe(2)
     expect(mockCmdPublish).toHaveBeenCalledTimes(2)
   })

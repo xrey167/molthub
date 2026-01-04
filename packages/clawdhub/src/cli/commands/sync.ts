@@ -150,13 +150,13 @@ export async function cmdSync(opts: GlobalOpts, options: SyncOptions, inputAllow
         matchVersion = remote === skill.fingerprint ? latestVersion : null
       }
 
-        candidates.push({
-          ...skill,
-          status: matchVersion ? 'synced' : 'update',
-          matchVersion,
-          latestVersion,
-        })
-      }
+      candidates.push({
+        ...skill,
+        status: matchVersion ? 'synced' : 'update',
+        matchVersion,
+        latestVersion,
+      })
+    }
   } catch (error) {
     candidatesSpinner.fail(formatError(error))
     throw error
@@ -176,9 +176,15 @@ export async function cmdSync(opts: GlobalOpts, options: SyncOptions, inputAllow
     return
   }
 
-  note('To sync', formatBulletList(actionable.map((candidate) => formatActionableLine(candidate, bump))))
+  note(
+    'To sync',
+    formatBulletList(
+      actionable.map((candidate) => formatActionableLine(candidate, bump)),
+      20,
+    ),
+  )
   if (synced.length > 0) {
-    note('Already synced', formatBulletList(synced.map(formatSyncedLine)))
+    note('Already synced', formatSyncedDisplay(synced))
   }
 
   const selected = await selectToUpload(actionable, {
@@ -350,10 +356,7 @@ function dedupeSkillsBySlug(skills: SkillFolder[]) {
   return { skills: unique, duplicates }
 }
 
-function formatActionableStatus(
-  candidate: Candidate,
-  bump: 'patch' | 'minor' | 'major',
-): string {
+function formatActionableStatus(candidate: Candidate, bump: 'patch' | 'minor' | 'major'): string {
   if (candidate.status === 'new') return 'NEW'
   const latest = candidate.latestVersion
   const next = latest ? semver.inc(latest, bump) : null
@@ -375,8 +378,17 @@ function formatSyncedSummary(candidate: Candidate): string {
   return version ? `${candidate.slug}@${version}` : candidate.slug
 }
 
-function formatBulletList(lines: string[]): string {
-  return lines.map((line) => `- ${line}`).join('\n')
+function formatBulletList(lines: string[], max: number): string {
+  if (lines.length <= max) return lines.map((line) => `- ${line}`).join('\n')
+  const head = lines.slice(0, max)
+  const rest = lines.length - head.length
+  return [...head, `... +${rest} more`].map((line) => `- ${line}`).join('\n')
+}
+
+function formatSyncedDisplay(synced: Candidate[]) {
+  const lines = synced.map(formatSyncedLine)
+  if (lines.length <= 12) return formatBulletList(lines, 12)
+  return formatCommaList(synced.map(formatSyncedSummary), 24)
 }
 
 function formatCommaList(values: string[], max: number) {
