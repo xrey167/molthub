@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Doc } from '../../convex/_generated/dataModel'
+import { InstallSwitcher } from '../components/InstallSwitcher'
 import { SkillCard } from '../components/SkillCard'
 
 export const Route = createFileRoute('/')({
@@ -47,8 +48,7 @@ function Home() {
             </div>
             <div className="hero-install" style={{ marginTop: 18 }}>
               <div className="stat">Search skills. Versioned, rollback-ready.</div>
-              <div className="stat">Install any skill folder in one shot:</div>
-              <div className="hero-install-code mono">npx clawdhub@latest install sonoscli</div>
+              <InstallSwitcher exampleSlug="sonoscli" />
             </div>
           </div>
         </div>
