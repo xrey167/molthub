@@ -7,6 +7,7 @@
 
 ### Fixed
 - Web: skill detail shows a loading state instead of flashing "Skill not found".
+- Web: user profile shows avatar + loading state (no "User not found" flash).
 
 ## 0.0.3 - 2026-01-04
 
