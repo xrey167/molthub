@@ -51,6 +51,13 @@ Stores your API token + cached registry URL.
 
 - Calls `/api/v1/search?q=...`.
 
+### `explore`
+
+- Lists latest updated skills via `/api/v1/skills?limit=...` (sorted by `updatedAt` desc).
+- Flags:
+  - `--limit <n>` (1–50, default: 25)
+- Output: `<slug>  v<version>  <age>  <summary>` (summary truncated to 50 chars).
+
 ### `install <slug>`
 
 - Resolves latest version via `/api/v1/skills/<slug>`.

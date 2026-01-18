@@ -186,10 +186,16 @@ program
 program
   .command('explore')
   .description('Browse latest updated skills from the registry')
-  .option('--limit <n>', 'Number of skills to show (max 50)', '25')
+  .option(
+    '--limit <n>',
+    'Number of skills to show (max 50)',
+    (value) => Number.parseInt(value, 10),
+    25,
+  )
   .action(async (options) => {
     const opts = await resolveGlobalOpts()
-    const limit = Number.parseInt(options.limit, 10) || 25
+    const limit =
+      typeof options.limit === 'number' && Number.isFinite(options.limit) ? options.limit : 25
     await cmdExplore(opts, limit)
   })
 

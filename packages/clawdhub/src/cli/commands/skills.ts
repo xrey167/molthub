@@ -247,7 +247,8 @@ export async function cmdExplore(opts: GlobalOpts, limit = 25) {
   const spinner = createSpinner('Fetching latest skills')
   try {
     const url = new URL(ApiRoutes.skills, registry)
-    url.searchParams.set('limit', String(Math.min(Math.max(1, limit), 50)))
+    const boundedLimit = clampLimit(limit)
+    url.searchParams.set('limit', String(boundedLimit))
     const result = await apiRequest(
       registry,
       { method: 'GET', url: url.toString() },
@@ -261,15 +262,29 @@ export async function cmdExplore(opts: GlobalOpts, limit = 25) {
     }
 
     for (const item of result.items) {
-      const version = item.latestVersion?.version ?? '?'
-      const age = formatRelativeTime(item.updatedAt)
-      const summary = item.summary ? `  ${truncate(item.summary, 50)}` : ''
-      console.log(`${item.slug}  v${version}  ${age}${summary}`)
+      console.log(formatExploreLine(item))
     }
   } catch (error) {
     spinner.fail(formatError(error))
     throw error
   }
+}
+
+export function formatExploreLine(item: {
+  slug: string
+  summary?: string | null
+  updatedAt: number
+  latestVersion?: { version: string } | null
+}) {
+  const version = item.latestVersion?.version ?? '?'
+  const age = formatRelativeTime(item.updatedAt)
+  const summary = item.summary ? `  ${truncate(item.summary, 50)}` : ''
+  return `${item.slug}  v${version}  ${age}${summary}`
+}
+
+export function clampLimit(limit: number, fallback = 25) {
+  if (!Number.isFinite(limit)) return fallback
+  return Math.min(Math.max(1, limit), 50)
 }
 
 function formatRelativeTime(timestamp: number): string {
@@ -292,7 +307,7 @@ function formatRelativeTime(timestamp: number): string {
 
 function truncate(str: string, maxLen: number): string {
   if (str.length <= maxLen) return str
-  return str.slice(0, maxLen - 1) + '…'
+  return `${str.slice(0, maxLen - 1)}…`
 }
 
 async function resolveSkillVersion(registry: string, slug: string, hash: string) {

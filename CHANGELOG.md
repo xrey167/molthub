@@ -5,6 +5,7 @@
 ### Added
 - Web: dynamic OG image cards for skills (name, description, version).
 - CLI: auto-scan Clawdbot skill roots (per-agent workspaces, shared skills, extraDirs).
+- CLI: add `explore` command for latest updates, with limit clamping + tests (thanks @jdrhyne, #14).
 - Web: import skills from public GitHub URLs (auto-detect `SKILL.md`, smart file selection, provenance).
 - Web/API: SoulHub (SOUL.md registry) with v1 endpoints and first-run auto-seed.
 
