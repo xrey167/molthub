@@ -1,7 +1,7 @@
 import { v } from 'convex/values'
-import type { Doc } from './_generated/dataModel'
 import { internalMutation, mutation, query } from './_generated/server'
 import { requireUser } from './lib/access'
+import { toPublicSkill } from './lib/public'
 import { insertStatEvent } from './skillStatEvents'
 
 export const isStarred = query({
@@ -55,10 +55,12 @@ export const listByUser = query({
       .withIndex('by_user', (q) => q.eq('userId', args.userId))
       .order('desc')
       .take(limit)
-    const skills: Doc<'skills'>[] = []
+    const skills: NonNullable<ReturnType<typeof toPublicSkill>>[] = []
     for (const star of stars) {
       const skill = await ctx.db.get(star.skillId)
-      if (skill) skills.push(skill)
+      const publicSkill = toPublicSkill(skill)
+      if (!publicSkill) continue
+      skills.push(publicSkill)
     }
     return skills
   },

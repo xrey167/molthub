@@ -1,6 +1,6 @@
 import { ConvexError } from 'convex/values'
 import semver from 'semver'
-import { api, internal } from '../_generated/api'
+import { internal } from '../_generated/api'
 import type { Doc, Id } from '../_generated/dataModel'
 import type { ActionCtx } from '../_generated/server'
 import { generateEmbedding } from './embeddings'
@@ -171,7 +171,9 @@ export async function publishSoulVersionForUser(
     embedding,
   })) as PublishResult
 
-  const owner = (await ctx.runQuery(api.users.getById, { userId })) as Doc<'users'> | null
+  const owner = (await ctx.runQuery(internal.users.getByIdInternal, {
+    userId,
+  })) as Doc<'users'> | null
   const ownerHandle = owner?.handle ?? owner?.name ?? userId
 
   void ctx.scheduler

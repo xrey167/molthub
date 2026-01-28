@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { api } from '../../convex/_generated/api'
 import type { Doc } from '../../convex/_generated/dataModel'
+import type { PublicSoul, PublicUser } from '../lib/publicUser'
 import { isModerator } from '../lib/roles'
 import { useAuthStatus } from '../lib/useAuthStatus'
 
@@ -12,9 +13,9 @@ type SoulDetailPageProps = {
 }
 
 type SoulBySlugResult = {
-  soul: Doc<'souls'>
+  soul: PublicSoul
   latestVersion: Doc<'soulVersions'> | null
-  owner: Doc<'users'> | null
+  owner: PublicUser | null
 } | null
 
 export function SoulDetailPage({ slug }: SoulDetailPageProps) {
@@ -47,7 +48,7 @@ export function SoulDetailPage({ slug }: SoulDetailPageProps) {
   const comments = useQuery(
     api.soulComments.listBySoul,
     soul ? { soulId: soul._id, limit: 50 } : 'skip',
-  ) as Array<{ comment: Doc<'soulComments'>; user: Doc<'users'> | null }> | undefined
+  ) as Array<{ comment: Doc<'soulComments'>; user: PublicUser | null }> | undefined
 
   const readmeContent = useMemo(() => {
     if (!readme) return null

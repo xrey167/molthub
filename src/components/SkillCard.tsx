@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
-import type { Doc } from '../../convex/_generated/dataModel'
+import type { PublicSkill } from '../lib/publicUser'
 
 type SkillCardProps = {
-  skill: Doc<'skills'>
+  skill: PublicSkill
   badge?: string | string[]
   chip?: string
   summaryFallback: string

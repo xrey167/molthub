@@ -1,13 +1,19 @@
 import { getAuthUserId } from '@convex-dev/auth/server'
 import { v } from 'convex/values'
 import { internal } from './_generated/api'
-import { mutation, query } from './_generated/server'
+import { internalQuery, mutation, query } from './_generated/server'
 import { assertAdmin, requireUser } from './lib/access'
+import { toPublicUser } from './lib/public'
 
 const DEFAULT_ROLE = 'user'
 const ADMIN_HANDLE = 'steipete'
 
 export const getById = query({
+  args: { userId: v.id('users') },
+  handler: async (ctx, args) => toPublicUser(await ctx.db.get(args.userId)),
+})
+
+export const getByIdInternal = internalQuery({
   args: { userId: v.id('users') },
   handler: async (ctx, args) => ctx.db.get(args.userId),
 })
@@ -87,10 +93,11 @@ export const list = query({
 export const getByHandle = query({
   args: { handle: v.string() },
   handler: async (ctx, args) => {
-    return ctx.db
+    const user = await ctx.db
       .query('users')
       .withIndex('handle', (q) => q.eq('handle', args.handle))
       .unique()
+    return toPublicUser(user)
   },
 })
 

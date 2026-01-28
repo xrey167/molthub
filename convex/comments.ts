@@ -2,6 +2,7 @@ import { v } from 'convex/values'
 import type { Doc } from './_generated/dataModel'
 import { mutation, query } from './_generated/server'
 import { assertModerator, requireUser } from './lib/access'
+import { type PublicUser, toPublicUser } from './lib/public'
 
 export const listBySkill = query({
   args: { skillId: v.id('skills'), limit: v.optional(v.number()) },
@@ -13,10 +14,10 @@ export const listBySkill = query({
       .order('desc')
       .take(limit)
 
-    const results: Array<{ comment: Doc<'comments'>; user: Doc<'users'> | null }> = []
+    const results: Array<{ comment: Doc<'comments'>; user: PublicUser | null }> = []
     for (const comment of comments) {
       if (comment.softDeletedAt) continue
-      const user = await ctx.db.get(comment.userId)
+      const user = toPublicUser(await ctx.db.get(comment.userId))
       results.push({ comment, user })
     }
     return results

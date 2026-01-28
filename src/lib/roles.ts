@@ -1,8 +1,9 @@
 import type { Doc } from '../../convex/_generated/dataModel'
+import type { PublicSkill } from './publicUser'
 
 type User = Doc<'users'> | null | undefined
 
-type Skill = Doc<'skills'> | null | undefined
+type Skill = PublicSkill | null | undefined
 
 export function isAdmin(user: User) {
   return user?.role === 'admin'

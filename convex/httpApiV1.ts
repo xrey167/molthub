@@ -59,7 +59,7 @@ type GetBySlugResult = {
     updatedAt: number
   } | null
   latestVersion: Doc<'skillVersions'> | null
-  owner: { handle?: string; displayName?: string; image?: string } | null
+  owner: { _id: Id<'users'>; handle?: string; displayName?: string; image?: string } | null
 } | null
 
 type ListVersionsResult = {

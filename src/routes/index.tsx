@@ -2,11 +2,11 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAction, useQuery } from 'convex/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '../../convex/_generated/api'
-import type { Doc } from '../../convex/_generated/dataModel'
 import { InstallSwitcher } from '../components/InstallSwitcher'
 import { SkillCard } from '../components/SkillCard'
 import { SoulCard } from '../components/SoulCard'
 import { getSkillBadges } from '../lib/badges'
+import type { PublicSkill, PublicSoul } from '../lib/publicUser'
 import { getSiteMode } from '../lib/site'
 
 export const Route = createFileRoute('/')({
@@ -20,8 +20,8 @@ function Home() {
 
 function SkillsHome() {
   const highlighted =
-    (useQuery(api.skills.list, { batch: 'highlighted', limit: 6 }) as Doc<'skills'>[]) ?? []
-  const latest = (useQuery(api.skills.list, { limit: 12 }) as Doc<'skills'>[]) ?? []
+    (useQuery(api.skills.list, { batch: 'highlighted', limit: 6 }) as PublicSkill[]) ?? []
+  const latest = (useQuery(api.skills.list, { limit: 12 }) as PublicSkill[]) ?? []
 
   return (
     <main>
@@ -132,7 +132,7 @@ function SkillsHome() {
 function OnlyCrabsHome() {
   const navigate = Route.useNavigate()
   const ensureSoulSeeds = useAction(api.seed.ensureSoulSeeds)
-  const latest = (useQuery(api.souls.list, { limit: 12 }) as Doc<'souls'>[]) ?? []
+  const latest = (useQuery(api.souls.list, { limit: 12 }) as PublicSoul[]) ?? []
   const [query, setQuery] = useState('')
   const seedEnsuredRef = useRef(false)
   const trimmedQuery = useMemo(() => query.trim(), [query])

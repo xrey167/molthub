@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import type { Doc } from '../../convex/_generated/dataModel'
+import type { PublicSkill } from '../lib/publicUser'
 
 export const Route = createFileRoute('/stars')({
   component: Stars,
@@ -11,7 +12,7 @@ function Stars() {
   const me = useQuery(api.users.me) as Doc<'users'> | null | undefined
   const skills =
     (useQuery(api.stars.listByUser, me ? { userId: me._id, limit: 50 } : 'skip') as
-      | Doc<'skills'>[]
+      | PublicSkill[]
       | undefined) ?? []
 
   const toggleStar = useMutation(api.stars.toggle)

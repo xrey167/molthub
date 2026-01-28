@@ -5,6 +5,7 @@ import { api } from '../../../convex/_generated/api'
 import type { Doc } from '../../../convex/_generated/dataModel'
 import { SkillCard } from '../../components/SkillCard'
 import { getSkillBadges } from '../../lib/badges'
+import type { PublicSkill, PublicUser } from '../../lib/publicUser'
 
 export const Route = createFileRoute('/u/$handle')({
   component: UserProfile,
@@ -13,15 +14,15 @@ export const Route = createFileRoute('/u/$handle')({
 function UserProfile() {
   const { handle } = Route.useParams()
   const me = useQuery(api.users.me) as Doc<'users'> | null | undefined
-  const user = useQuery(api.users.getByHandle, { handle }) as Doc<'users'> | null | undefined
+  const user = useQuery(api.users.getByHandle, { handle }) as PublicUser | null | undefined
   const publishedSkills = useQuery(
     api.skills.list,
     user ? { ownerUserId: user._id, limit: 50 } : 'skip',
-  ) as Doc<'skills'>[] | undefined
+  ) as PublicSkill[] | undefined
   const starredSkills = useQuery(
     api.stars.listByUser,
     user ? { userId: user._id, limit: 50 } : 'skip',
-  ) as Doc<'skills'>[] | undefined
+  ) as PublicSkill[] | undefined
 
   const isSelf = Boolean(me && user && me._id === user._id)
   const [tab, setTab] = useState<'stars' | 'installed'>('stars')

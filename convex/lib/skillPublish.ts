@@ -6,6 +6,7 @@ import type { ActionCtx, MutationCtx } from '../_generated/server'
 import { getSkillBadgeMap, isSkillHighlighted } from './badges'
 import { generateChangelogForPublish } from './changelog'
 import { generateEmbedding } from './embeddings'
+import type { PublicUser } from './public'
 import {
   buildEmbeddingText,
   getFrontmatterMetadata,
@@ -165,7 +166,9 @@ export async function publishVersionForUser(
     embedding,
   })) as PublishResult
 
-  const owner = (await ctx.runQuery(api.users.getById, { userId })) as Doc<'users'> | null
+  const owner = (await ctx.runQuery(internal.users.getByIdInternal, {
+    userId,
+  })) as Doc<'users'> | null
   const ownerHandle = owner?.handle ?? owner?.displayName ?? owner?.name ?? 'unknown'
 
   void ctx.scheduler
@@ -261,7 +264,7 @@ async function schedulePublishWebhook(
 ) {
   const result = (await ctx.runQuery(api.skills.getBySlug, {
     slug: params.slug,
-  })) as { skill: Doc<'skills'>; owner: Doc<'users'> | null } | null
+  })) as { skill: Doc<'skills'>; owner: PublicUser | null } | null
   if (!result?.skill) return
 
   const payload: WebhookSkillPayload = {

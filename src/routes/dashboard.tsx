@@ -3,6 +3,7 @@ import { useQuery } from 'convex/react'
 import { Package, Plus, Upload } from 'lucide-react'
 import { api } from '../../convex/_generated/api'
 import type { Doc } from '../../convex/_generated/dataModel'
+import type { PublicSkill } from '../lib/publicUser'
 
 export const Route = createFileRoute('/dashboard')({
   component: Dashboard,
@@ -13,7 +14,7 @@ function Dashboard() {
   const mySkills = useQuery(
     api.skills.list,
     me?._id ? { ownerUserId: me._id, limit: 100 } : 'skip',
-  ) as Doc<'skills'>[] | undefined
+  ) as PublicSkill[] | undefined
 
   if (!me) {
     return (
@@ -59,7 +60,7 @@ function Dashboard() {
   )
 }
 
-function SkillCard({ skill, ownerHandle }: { skill: Doc<'skills'>; ownerHandle: string | null }) {
+function SkillCard({ skill, ownerHandle }: { skill: PublicSkill; ownerHandle: string | null }) {
   return (
     <div className="dashboard-skill-card">
       <div className="dashboard-skill-info">

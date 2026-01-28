@@ -2,8 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAction, useQuery } from 'convex/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '../../../convex/_generated/api'
-import type { Doc } from '../../../convex/_generated/dataModel'
 import { SoulCard } from '../../components/SoulCard'
+import type { PublicSoul } from '../../lib/publicUser'
 
 const sortKeys = ['newest', 'downloads', 'stars', 'name', 'updated'] as const
 type SortKey = (typeof sortKeys)[number]
@@ -40,7 +40,7 @@ function SoulsIndex() {
   const view = search.view ?? 'list'
   const [query, setQuery] = useState(search.q ?? '')
 
-  const souls = useQuery(api.souls.list, { limit: 500 }) as Doc<'souls'>[] | undefined
+  const souls = useQuery(api.souls.list, { limit: 500 }) as PublicSoul[] | undefined
   const ensureSoulSeeds = useAction(api.seed.ensureSoulSeeds)
   const seedEnsuredRef = useRef(false)
   const isLoadingSouls = souls === undefined

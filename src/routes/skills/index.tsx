@@ -6,6 +6,7 @@ import { api } from '../../../convex/_generated/api'
 import type { Doc } from '../../../convex/_generated/dataModel'
 import { SkillCard } from '../../components/SkillCard'
 import { getSkillBadges, isSkillHighlighted } from '../../lib/badges'
+import type { PublicSkill } from '../../lib/publicUser'
 
 const sortKeys = ['newest', 'downloads', 'installs', 'stars', 'name', 'updated'] as const
 const pageSize = 25
@@ -24,19 +25,19 @@ function parseDir(value: unknown, sort: SortKey): SortDir {
 }
 
 type SkillListEntry = {
-  skill: Doc<'skills'>
+  skill: PublicSkill
   latestVersion: Doc<'skillVersions'> | null
   ownerHandle?: string | null
 }
 
 type SkillSearchEntry = {
-  skill: Doc<'skills'>
+  skill: PublicSkill
   version: Doc<'skillVersions'> | null
   score: number
   ownerHandle?: string | null
 }
 
-function buildSkillHref(skill: Doc<'skills'>, ownerHandle?: string | null) {
+function buildSkillHref(skill: PublicSkill, ownerHandle?: string | null) {
   const owner = ownerHandle?.trim() || String(skill.ownerUserId)
   return `/${encodeURIComponent(owner)}/${encodeURIComponent(skill.slug)}`
 }

@@ -7,6 +7,7 @@ import remarkGfm from 'remark-gfm'
 import { api } from '../../convex/_generated/api'
 import type { Doc, Id } from '../../convex/_generated/dataModel'
 import { getSkillBadges } from '../lib/badges'
+import type { PublicSkill, PublicUser } from '../lib/publicUser'
 import { canManageSkill, isModerator } from '../lib/roles'
 import { useAuthStatus } from '../lib/useAuthStatus'
 import { SkillDiffCard } from './SkillDiffCard'
@@ -18,9 +19,9 @@ type SkillDetailPageProps = {
 }
 
 type SkillBySlugResult = {
-  skill: Doc<'skills'>
+  skill: PublicSkill
   latestVersion: Doc<'skillVersions'> | null
-  owner: Doc<'users'> | null
+  owner: PublicUser | null
   forkOf: {
     kind: 'fork' | 'duplicate'
     version: string | null
@@ -76,7 +77,7 @@ export function SkillDetailPage({
   const comments = useQuery(
     api.comments.listBySkill,
     skill ? { skillId: skill._id, limit: 50 } : 'skip',
-  ) as Array<{ comment: Doc<'comments'>; user: Doc<'users'> | null }> | undefined
+  ) as Array<{ comment: Doc<'comments'>; user: PublicUser | null }> | undefined
 
   const canManage = canManageSkill(me, skill)
   const isStaff = isModerator(me)
