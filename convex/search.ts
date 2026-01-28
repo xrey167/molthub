@@ -2,8 +2,8 @@ import { v } from 'convex/values'
 import { internal } from './_generated/api'
 import type { Doc, Id } from './_generated/dataModel'
 import { action, internalQuery } from './_generated/server'
-import { generateEmbedding } from './lib/embeddings'
 import { getSkillBadgeMaps, isSkillHighlighted } from './lib/badges'
+import { generateEmbedding } from './lib/embeddings'
 import { matchesExactTokens, tokenize } from './lib/searchText'
 
 type HydratedEntry = {

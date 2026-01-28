@@ -144,8 +144,7 @@ export function SkillsIndex() {
   }, [hasQuery, paginatedResults, searchResults])
 
   const filtered = useMemo(
-    () =>
-      baseItems.filter((entry) => (highlightedOnly ? isSkillHighlighted(entry.skill) : true)),
+    () => baseItems.filter((entry) => (highlightedOnly ? isSkillHighlighted(entry.skill) : true)),
     [baseItems, highlightedOnly],
   )
 
